@@ -3,10 +3,24 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class Store extends Model
 {
-    protected $fillable = ['name','description','slug','phone','mobile_phone'];
+    use HasSlug;
+
+    protected $fillable = ['name','description','slug','phone','mobile_phone','logo'];
+
+    /**
+     * Get the options for generating the slug.
+     */
+    public function getSlugOptions() : SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug');
+    }
 
     public function user()
     {

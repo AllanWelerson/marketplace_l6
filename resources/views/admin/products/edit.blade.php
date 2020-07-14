@@ -66,12 +66,12 @@
 
         <div class="form-group">
             <label for="">Fotos do Produto</label>
-            <input type="file" name="photos[]" class="form-control" multiple>
-        </div>
-
-        <div class="form-group">
-            <label>Slug</label>
-            <input type="text" name="slug" class="form-control" value="{{$product->slug}}">
+            <input type="file" name="photos[]" class="form-control  @error('photos.*') is-invalid @enderror" multiple>
+            @error('photos.*')
+            <div class="invalid-feedback">
+                {{$message}}
+            </div>
+            @enderror
         </div>
 
         <div>
@@ -83,8 +83,13 @@
 
     <div class="row">
         @foreach($product->photos as $photo)
-            <div class="col-4">
+            <div class="col-4 text-center">
                 <img class="img-fluid" src="{{asset('storage/' . $photo->image)}}" alt="">
+                <form action="{{route('admin.photo.remove')}}" method="post">
+                    @csrf
+                    <input type="hidden" name="photoName" value="{{$photo->image}}">
+                    <button type="submit" class="btn btn-danger btn-lg">Remover</button>
+                </form>
             </div>
         @endforeach
     </div>
