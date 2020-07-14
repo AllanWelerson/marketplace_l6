@@ -16,10 +16,30 @@ use App\Product;
 use App\Store;
 use App\User;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', 'HomeController@index')->name('home');
+Route::get('/product/{slug}', 'HomeController@single')->name('product.single');
 
+Route::group(['middleware' => ['auth']], function(){
+    Route::prefix('admin')->name('admin.')->namespace('Admin')->group(function(){
+//    Route::prefix('stores')->name('stores.')->group(function(){
+//        Route::get('/', 'StoreController@index')->name('index');
+//        Route::get('/create', 'StoreController@create')->name('create');
+//        Route::post('/', 'StoreController@store')->name('store');
+//        Route::get('/{store}/edit', 'StoreController@edit')->name('edit');
+//        Route::post('/update/{store}', 'StoreController@update')->name('update');
+//        Route::get('/destroy/{store}', 'StoreController@destroy')->name('destroy');
+//    });
+        Route::resource('stores','StoreController');
+        Route::resource('products','ProductController');
+        Route::resource('categories','CategoryController');
+
+        Route::post('photos/remove','ProductPhotoController@removePhoto')->name('photo.remove');
+    });
+});
+
+Auth::routes();
+
+//Route::get('/home', 'HomeController@index')->name('home');//->middleware('auth');
 
 Route::get('/model', function(){
 //    $products = Product::all();
@@ -61,26 +81,3 @@ Route::get('/model', function(){
 //    return $categoria->products;
 });
 
-
-
-Route::group(['middleware' => ['auth']], function(){
-    Route::prefix('admin')->name('admin.')->namespace('Admin')->group(function(){
-//    Route::prefix('stores')->name('stores.')->group(function(){
-//        Route::get('/', 'StoreController@index')->name('index');
-//        Route::get('/create', 'StoreController@create')->name('create');
-//        Route::post('/', 'StoreController@store')->name('store');
-//        Route::get('/{store}/edit', 'StoreController@edit')->name('edit');
-//        Route::post('/update/{store}', 'StoreController@update')->name('update');
-//        Route::get('/destroy/{store}', 'StoreController@destroy')->name('destroy');
-//    });
-        Route::resource('stores','StoreController');
-        Route::resource('products','ProductController');
-        Route::resource('categories','CategoryController');
-
-        Route::post('photos/remove','ProductPhotoController@removePhoto')->name('photo.remove');
-    });
-});
-
-Auth::routes();
-
-//Route::get('/home', 'HomeController@index')->name('home');//->middleware('auth');
