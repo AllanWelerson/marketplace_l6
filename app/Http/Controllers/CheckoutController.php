@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Payment\PagSeguro\CreditCard;
+use App\Store;
 use Illuminate\Http\Request;
 
 class CheckoutController extends Controller
@@ -38,6 +39,8 @@ class CheckoutController extends Controller
             $reference = 'XPTO';
 
             $cartItems = session()->get('cart');
+            $stores = array_unique(array_column($cartItems, 'store_id'));
+
             $creditCardPayment = new CreditCard($cartItems, $user, $dataPost, $reference);
 
             $result = $creditCardPayment->doPayment();
@@ -50,7 +53,13 @@ class CheckoutController extends Controller
                 'reference' => $reference,
             ];
 
-            $user->orders()->create($userOrder);
+            $userOrder = $user->orders()->create($userOrder);
+
+
+            $userOrder->stores()->sync($stores);
+
+            // notificar loja de noto pedido
+            $store = (new Store())->notifyStoreOwners($stores);
 
             session()->forget('cart');
             session()->forget('pagseguro_session_code');

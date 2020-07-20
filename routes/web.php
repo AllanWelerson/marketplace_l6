@@ -33,8 +33,18 @@ Route::prefix('checkout')->name('checkout.')->group(function(){
     Route::get('/thanks','CheckoutController@thanks')->name('thanks');
 });
 
-Route::group(['middleware' => ['auth']], function(){
+Route::get('my-orders', 'UserOrderController@index')->name('user.orders')->middleware('auth');
+
+Route::group(['middleware' => ['auth', 'access.control.store.admin']], function(){
+
+
+
     Route::prefix('admin')->name('admin.')->namespace('Admin')->group(function(){
+
+        Route::get('notifications', 'NotificationController@notifications')->name('notification.index');
+        Route::get('notifications/read-all', 'NotificationController@readAll')->name('notification.read.all');
+        Route::get('notifications/read/{notification}', 'NotificationController@read')->name('notification.read');
+
 //    Route::prefix('stores')->name('stores.')->group(function(){
 //        Route::get('/', 'StoreController@index')->name('index');
 //        Route::get('/create', 'StoreController@create')->name('create');
@@ -48,6 +58,8 @@ Route::group(['middleware' => ['auth']], function(){
         Route::resource('categories','CategoryController');
 
         Route::post('photos/remove','ProductPhotoController@removePhoto')->name('photo.remove');
+
+        Route::get('orders/my', 'OrdersController@index')->name('orders.my');
     });
 });
 
@@ -95,3 +107,17 @@ Route::get('/model', function(){
 //    return $categoria->products;
 });
 
+
+//Route::get('not', function(){
+//    $user = \App\User::find(45);
+
+//    $user->notify(new \App\Notifications\StoreReceiveNewOrder());
+
+//    $notification = $user->unreadNotifications->first();
+
+//    $notification->markAsRead();
+
+//    return $user->unreadNotifications;
+
+//    return $user->readNotifications;
+//});
