@@ -9,6 +9,13 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-12 msg"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
                 <form action="" method="post">
                     <div class="row">
                         <div class="col-md-12">
